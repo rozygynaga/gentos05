@@ -1,0 +1,49 @@
+graphicsmode -1 640
+#terminal --font-spacing=0:2
+#color normal=6c6d highlight=6c6d helptext=6c6d heading=6c6c standard=6c6c border=6c6d
+#splashimage /multiboot.xpm.gz bulat
+#splashimage /pspnet.xpm.gz tulisan
+#splashimage /pasport.xpm.gz
+#splashimage /splash.xpm.gz
+splashimage /ubutu.xpm.gz
+#splashimage /usb.xpm.gz
+#splashimage /backtrack.xpm.gz
+#splashimage /cyberpsp.xpm.gz
+
+    clear
+    debug off
+    write 0x8274 0x2001
+    graphicsmode -1 640 768 24:32 && splashimage /ubutu.xpm.gz > nul
+    color normal=4041 highlight=6c6d helptext=6c6d heading=6c6c standard=6c6c border=04
+    write (md)0x220+1 !BAT\necho -n -P:0000 $[0404]                            PSP NET USB MULTIBOOT 2012                                        \necho -n -P:2524 $[0202] Enter Terus Asupkeun Passwordna\0
+    initscript (md)0x220+1
+
+    set wdspace=0
+    set lnspace=0
+    set topstart=23
+    set rstart=29
+    set noitems=1
+    set menuw=25
+    set bdwidth=1,5
+    set tophelp=25
+    /menusetting u
+    /menusetting   %wdspace% %lnspace% %bdwidth% %tophelp% %noitems% %topstart% %menuw% %rstart%
+
+title INSERT YOUR PASSWORD
+password --md5 $1$4$GP8wMYuBvgY93rX7yoh4Y1
+geometry (hd0,0)
+configfile /pspnet.lst
+savedefault
+
+title Boot Kana Hardisk
+map (hd0) (hd1)
+map (hd1) (hd0)
+map --hook
+chainloader (hd0)+1
+rootnoverify (hd0)
+
+title Restar
+reboot
+
+title Shutdown
+halt
