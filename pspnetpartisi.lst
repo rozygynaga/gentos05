@@ -1,0 +1,67 @@
+"PSPNET Multi Boot USB"
+graphicsmode -1 640
+#terminal --font-spacing=0:2
+#color normal=6c6c highlight=6c6d helptext=6c6d heading=6c6c standard=6c6c border=6c6d
+#graphicsmode -1 640
+#terminal --font-spacing=0:2
+#color normal=04 highlight=4c helptext=04 heading=04 standard=04 border=7
+#splashimage /backtrack.xpm.gz
+
+clear
+    debug off
+    write 0x8274 0x2001
+    graphicsmode -1 640 768 24:32 && splashimage /ubutu.xpm.gz > nul
+    color normal=6c6c highlight=6c6d helptext=6c6d heading=6c6c standard=6c6c border=6c6d
+    write (md)0x220+1 !BAT\necho -n -P:1556 $[A4B4]                            PSP NET USB MULTIBOOT 2013                                        					        \necho -n -P:1808 $[6c6j] By Gentos Pasport\0
+    initscript (md)0x220+1
+
+    set wdspace=0
+    set lnspace=0
+	#top star jang ngeser menu kahandap
+    set topstart=2    
+	#rstart jang ngageser menu ka kanan
+    set rstart=52
+    set noitems=12
+    set menuw=25
+    set bdwidth=0
+    set tophelp=25
+    /menusetting u
+    /menusetting   %wdspace% %lnspace% %bdwidth% %tophelp% %noitems% %topstart% %menuw% %rstart%
+	
+#timeout 10
+#default /default
+
+title Setup Win XP SP2
+root (hd0,1)
+chainloader (hd0,1)/$WIN_NT$.~BT/SETUPLDR.BIN
+savedefault 1
+
+title Mini Windows Xp
+root (hd0,1)
+chainloader (hd0,1)/HBCD/XPLOADER.BIN
+savedefault 1
+
+title Partition Wizard
+map (hd0,1)/iso/pwhe7.iso (hd32)
+map --hook
+chainloader (hd32)
+boot
+
+title Spotmau 2007
+map (hd0,1)/iso/boot.iso (hd32)
+map --hook
+chainloader (hd32)
+boot
+
+title Boot Kana Hardisk
+map (hd0) (hd1)
+map (hd1) (hd0)
+map --hook
+chainloader (hd0)+1
+rootnoverify (hd0)
+
+title Restart
+reboot
+
+title Paehan
+halt
