@@ -1,0 +1,47 @@
+"PSPNET Multi Boot USB"
+graphicsmode -1 640
+splashimage /ubuntu.xpm.gz
+
+clear
+    debug off
+    write 0x8274 0x2001
+    graphicsmode -1 640 768 24:32 && splashimage /ubuntu.xpm.gz > nul
+    color normal=6c6c highlight=6c6d helptext=6c6d heading=6c6c standard=6c6c border=6c6d
+    write (md)0x220+1 !BAT\necho -n -P:1556 $[A4B4]                            PSP NET USB MULTIBOOT 2013                                        					        \necho -n -P:1808 $[6c6j] By Gentos Pasport\0
+    initscript (md)0x220+1
+
+    set wdspace=0
+    set lnspace=0
+	#top star jang ngeser menu kahandap
+    set topstart=9    
+	#rstart jang ngageser menu ka kanan
+    set rstart=10
+    set noitems=12
+    set menuw=25
+    set bdwidth=0
+    set tophelp=25
+    /menusetting u
+    /menusetting   %wdspace% %lnspace% %bdwidth% %tophelp% %noitems% %topstart% %menuw% %rstart%
+	
+#timeout 10
+#default /default
+
+title Start Hiren's BootCD
+find --set-root /HBCD/boot.gz
+kernel /HBCD/memdisk
+initrd /HBCD/boot.gz
+
+title Mini Windows Xp
+find --set-root /HBCD/XPLOADER.BIN
+chainloader /HBCD/XPLOADER.BIN
+
+title Windows XP/2000/2003 Setup- First and Second parts
+root (hd0,0)
+configfile /winsetup.lst
+savedefault
+
+title Restart
+reboot
+
+title Paehan
+halt
