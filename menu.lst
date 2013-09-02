@@ -1,0 +1,12 @@
+﻿gfxmenu (hd0,0)/boot/Splash/Snaiya
+timeout 30
+default 0
+
+title INSERT YOUR PASSWORD
+password --md5 $1$4$GP8wMYuBvgY93rX7yoh4Y1
+geometry (hd0,0)
+configfile /pspnet.lst
+savedefault
+
+
+
