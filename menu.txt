@@ -1,0 +1,71 @@
+graphicsmode -1 640
+terminal --font-spacing=0:2
+color normal=6c6d highlight=6c6d helptext=6c6d heading=6c6c standard=6c6c border=6c6d
+splashimage /mback.xpm.gz
+
+
+    clear
+    debug off
+    write 0x8274 0x2001
+    graphicsmode -1 640 768 24:32 && splashimage /mback.xpm.gz > nul
+    color normal=4041 highlight=6c6d helptext=6c6d heading=6c6c standard=6c6c border=04
+    write (md)0x220+1 !BAT\necho -n -P:0000 $[0404]                            PSP NET USB MULTIBOOT 2012                                        \necho -n -P:2524 $[0202] Enter Terus Asupkeun Passwordna\0
+    initscript (md)0x220+1
+
+    set wdspace=0
+    set lnspace=0
+    set topstart=23
+    set rstart=29
+    set noitems=1
+    set menuw=25
+    set bdwidth=1,5
+    set tophelp=25
+    /menusetting u
+    /menusetting   %wdspace% %lnspace% %bdwidth% %tophelp% %noitems% %topstart% %menuw% %rstart%
+
+title INSERT YOUR PASSWORD
+password --md5 $1$4$GP8wMYuBvgY93rX7yoh4Y1
+geometry (hd0,0)
+configfile /pspnet.lst
+savedefault
+
+title Boot to USB Plop
+kernel /plop/plpbt.bin hiddenusb
+
+title Boot Kana Hardisk
+map (hd0) (hd1)
+map (hd1) (hd0)
+map --hook
+chainloader (hd0)+1
+rootnoverify (hd0)
+
+title INSTALL XP - STEP 1 - XP Setup from ISO file using FiraDisk\nRemember to select both AHCI driver AND FiraDisk driver!!!
+    find --set-root --ignore-floppies --ignore-cd /winvblock.ima.gz
+    map --mem /winvblock.ima.gz (fd0)
+    map --mem /winvblock.ima.gz  (fd1)
+    # if this loads the ISO into memory slowly - then you need to run WinContig on the ISO file on your USB drive to speed it up!
+    map  /XP.iso (0xff) || map  --mem /XP.iso (0xff)
+    map (hd0) (hd1)
+    map (hd1) (hd0)
+    map --hook
+    root (0xff)
+    chainloader (0xff)/i386/setupldr.bin || chainloader (0xff)/I386/SETUPLDR.BIN || chainloader (0xff)
+    pause If you have an AHCI HDD you MUST press F6 when prompted, then hit S to select WinVBlock or FiraDisk (recommended) driver, then hit S again to select your AHCI driver (e.g. Atom Netbook=WinVBlock+ICH7R/DH, DQ67 series 6=FiraDisk+Desktop,Workstation,Server Express)
+    pause Now quickly hit [Enter] twice (and then F6 if you need to install an AHCI driver) ...
+
+    title INSTALL XP - STEP 2 -  Install XP from ISO file (phase 2)\n2nd phase of setup will complete the install and reboot from the hard disk
+    find --set-root --ignore-floppies --ignore-cd /winvblock.ima.gz
+    # we must load the ISO into memory, so it will be slow to load here ...
+    map --mem /XP.iso (0xff) || map  /XP.iso (0xff)
+    map (hd0) (hd1)
+    map (hd1) (hd0)
+    map --hook
+    rootnoverify (hd0,0)
+    chainloader (hd0)+1
+    pause Press ENTER and then unplug this USB drive...
+
+title Restar
+reboot
+
+title Shutdown
+halt
